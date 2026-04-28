@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Marksheet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="marksheet">
+
+  <!-- HEADER -->
+
+  <div class="header">
+    <img src="logo.png" class="logo">
+    <div>
+      <h2>Assam Higher Secondary Education Council</h2>
+      <p>RESULTS OF HIGHER SECONDARY FINAL EXAMINATION - 2026</p>
+      <p>(CLASS 12th ARTS, SCIENCE & COMMERCE)</p>
+    </div>
+  </div>
+
+  <!-- INFO TABLE -->
+
+  <table class="info-table">
+    <tr>
+      <td>Stream</td><td id="stream"></td>
+      <td>Date</td><td>28/04/2026</td>
+    </tr>
+    <tr>
+      <td>Name</td><td id="name"></td>
+      <td>Roll</td><td id="roll"></td>
+    </tr>
+    <tr>
+      <td>Reg No.</td><td id="reg"></td>
+      <td>Number</td><td id="number"></td>
+    </tr>
+    <tr>
+      <td>Registration Year</td><td>2023-24</td>
+      <td></td><td></td>
+    </tr>
+    <tr>
+      <td>College/School</td>
+      <td colspan="3" id="school"></td>
+    </tr>
+  </table>
+
+  <!-- MARKS TABLE -->
+
+  <table>
+    <tr>
+      <th>CODE</th>
+      <th></th>
+      <th>SUBJECTS</th>
+      <th>THEORY</th>
+      <th>PR</th>
+      <th>TOTAL</th>
+      <th>GRACE</th>
+      <th>RESULT</th>
+    </tr>
+    <tbody id="marks"></tbody>
+  </table>
+
+  <!-- GRAND TOTAL SECTION -->
+
+  <table class="info-table">
+    <tr>
+      <td>GRAND TOTAL (Out of 500 Marks)<br>
+      <small>(Marks of subjects excluding the fourth elective)</small></td>
+
+```
+  <td id="grandBox"></td>
+
+  <td>REPEAT</td>
+  <td id="repeat"></td>
+</tr>
+```
+
+  </table>
+
+  <!-- TOTAL GRACE -->
+
+  <table class="info-table">
+    <tr>
+      <td>TOTAL GRACE</td>
+      <td id="totalGrace"></td>
+    </tr>
+  </table>
+
+  <!-- ENV + REMARK -->
+
+  <table class="info-table">
+    <tr>
+      <td>ENVE-GRADE ON ENVIRONMENTAL EDUCATION</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>REMARK</td>
+      <td id="remark"></td>
+    </tr>
+  </table>
+
+  <!-- PASSING CRITERIA + INTERNET COPY -->
+
+  <table class="info-table">
+    <tr>
+      <td>
+        <b>PASSING CRITERIA</b><br><br>
+        THEORY<br>
+        FULL MARKS : 100/80/70/50/30<br>
+        PASS MARKS : 30/24/21/15/09
+      </td>
+
+```
+  <td>
+    PROJECT/PRACTICAL<br>
+    FULL MARKS : 20/30/50/70<br>
+    PASS MARKS : 08/12/20/28
+  </td>
+
+  <td>
+    <b>INTERNET COPY</b><br><br>
+    Controller Of Examinations (I/C)<br>
+    Assam State School Education Board, DIV - II<br>
+    Guwahati - 21
+  </td>
+</tr>
+```
+
+  </table>
+
+  <!-- FOOTER -->
+
+  <div class="footer">
+    This Mark-sheet is not to be treated as original. Original Certificate cum Mark-sheet will be issued separately.
+  </div>
+
+  <!-- BUTTONS -->
+
+  <div class="buttons">
+    <button onclick="history.back()"><< Back</button>
+    <button onclick="window.print()">Print</button>
+  </div>
+
+</div>
+
+<script>
+let student = JSON.parse(localStorage.getItem("student"));
+
+if (student) {
+
+  document.getElementById("name").innerText = student.name;
+  document.getElementById("roll").innerText = student.roll;
+  document.getElementById("reg").innerText = student.reg;
+  document.getElementById("number").innerText = student.number;
+  document.getElementById("stream").innerText = student.stream;
+  document.getElementById("school").innerText = student.school;
+
+  let totalMarks = 0;
+  let totalGrace = 0;
+  let pass = true;
+  let html = "";
+
+  student.marks.forEach((m, i) => {
+
+    let total = (m.th === "ABS") ? "ABS" : (m.th + m.pr + m.grace);
+
+    if (total !== "ABS" && total < 30) pass = false;
+    if (total !== "ABS") totalMarks += total;
+    totalGrace += m.grace;
+
+    html += `
+      <tr>
+        <td>${m.code ? m.code : ""}</td>
+        <td>${i < 2 ? "CORE" : "EL-" + (i-1)}</td>
+        <td>${m.sub}</td>
+        <td>${m.th}</td>
+        <td>${m.pr === 0 ? "-" : m.pr}</td>
+        <td>${total}</td>
+        <td>${m.grace}</td>
+        <td>
+  1st Division 300 and above<br>
+  2nd Division 225 - 299<br>
+  3rd Division 150 - 224
+</td>
+
+      </tr>
+    `;
+  });
+
+  let percent = ((totalMarks / 500) * 100).toFixed(2);
+
+  document.getElementById("marks").innerHTML = html;
+  document.getElementById("grandBox").innerHTML = totalMarks + " / 500<br>(" + percent + "%)";
+  document.getElementById("repeat").innerText = pass ? "No" : "Yes";
+  document.getElementById("totalGrace").innerText = totalGrace;
+  document.getElementById("remark").innerText = pass ? "PASSED" : "FAILED";
+}
+</script>
+
+</body>
+</html>
